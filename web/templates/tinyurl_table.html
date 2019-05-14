@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		.container{
+			
+			padding-top: 25px;
+		}
+		#nextbtn{
+			padding-left: 10%;
+			padding-bottom: 40px;
+		}
+		#prevbtn{
+			padding-left: 35%;
+			padding-bottom: 40px;
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<div class="container" >
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Tiny Url</th>
+						<th>Nickname</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+				{% if urldata %}
+					{% for urlobj in urldata %}
+					<tr>
+						<th>{{ forloop.counter }}</th>
+						<th><a href="{{ urlobj.tinyurl }}" target="_blank">{{ urlobj.tinyurl }}</a></th>
+						<th>{{ urlobj.nickname }}</th>
+						<th>
+							<button type="button" class="btn btn-danger btn-ln" id="removeurl" onclick="chnagestatus('{{ urlobj.urlid }}','Removed','{{ pageno }}')">Remove</button>
+						</th>
+						
+					</tr>
+					{% endfor %}	
+				{% else %}	
+					<tr>
+						<th>---</th>
+						<th>---</th>
+						<th>---</th>
+						<th>---</th>
+					</tr>
+				{% endif %}	
+				</tbody>
+			</table>
+			{% if pageno > 0%}
+				{% if pageno == 1 or  pageno < 1 %}
+					<span id="prevbtn">
+						<button type="button" class="btn btn-danger btn-sm disabled">❮ Previous</button>	
+					</span>
+				{% else %}
+					<span id="prevbtn">
+						<button type="button" class="btn btn-danger btn-sm" id="pagedata" onclick="getpreviousdata('{{ pageno }}')">❮ Previous</button>	
+					</span>
+				{% endif %}	 
+
+				{% if urldata and pageno > 0 %}
+					<span id="nextbtn">
+						<button type="button" class="btn btn-danger btn-sm" onclick="getnextdata('{{ pageno }}')">Next ❯</button>	
+					</span>
+				{% else %}	
+					<span id="nextbtn">
+						<button type="button" class="btn btn-danger btn-sm disabled">Next ❯</button>	
+					</span>
+				{% endif %}	
+			{% endif %}	
+			
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	function chnagestatus(urlid,status,pageno){
+		var msg = 'Are You Sure to Remove the URL ?';
+		if(confirm(msg)){
+			var requestdata = {};
+			requestdata['urlid'] =urlid;
+			requestdata['sessionid'] = '{{ sessionid }}';
+
+			var json_upload = "delete=" + JSON.stringify(requestdata);
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					location.replace('http://127.0.0.1:8001/web/')
+				}
+			};
+			xhttp.open("POST", "http://127.0.0.1:8001/api/remove");
+			xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhttp.send(json_upload);
+		}
+	}
+
+	function getpreviousdata(pageno){
+		if(pageno > 1){
+			pageno = parseInt(pageno)-1
+			location.replace('http://127.0.0.1:8001/web/generate/'+pageno)
+		}
+
+	}
+
+	function getnextdata(pageno){
+		pageno = parseInt(pageno)+1	
+		location.replace('http://127.0.0.1:8001/web/generate/'+pageno)
+	}
+</script>
+</html>

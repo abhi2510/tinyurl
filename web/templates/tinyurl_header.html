@@ -1,0 +1,40 @@
+ <!DOCTYPE html>
+ {% load staticfiles %}
+ <html>
+ <head>
+  <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
+   <link rel="stylesheet" type="text/css" href="{% static 'css/generateurl.css' %}">
+   <style type="text/css">
+     
+  
+
+   </style>
+ </head>
+ <body>
+  <div id="myDIV" class="header">
+      <div class="container">
+       <div class="row">
+        <div class="col-sm-6">
+          <input type="text" id="search" placeholder="Search for nickname " class="form-control" required/>
+        </div>
+        <div class="col-sm-2">
+          <span class="addBtn" id="searchbtn"><i class='fas fa-search'></i>&nbsp;&nbsp;Search</span>
+        </div>
+        <div class="col-sm-4" id="homebtn">
+          <span id="home"><a href="http://127.0.0.1:8001/web/"><i class="fa fa-home"></i>&nbsp;<b>Home</b></a></span>
+        </div>
+      </div>
+    </div>  
+  </div>  
+
+ </body>
+ <script type="text/javascript">
+    $(document).ready(function(){
+      $('#searchbtn').click(function(){
+        var nickname = $("#search").val();
+        window.location.replace('http://127.0.0.1:8001/web/generate/'+nickname)
+
+      });
+    });
+ </script>
+ </html>

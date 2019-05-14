@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head>
+	<title>Tiny URL</title>
+	 <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'image/urlshortener.png' %}" />
+
+    <style type="text/css">
+    	#body{
+    		background-color: white;
+    	}
+    	#welcome{
+    		text-align: center;
+    	}
+    	#enterurl{
+    		padding-left: 25%; 
+    		padding-top: 10px;
+    	}
+    	#generatebtn{
+    		padding-left: 40%;
+    		padding-top: 20px; 
+    	}
+        #tinyurlrow{
+            padding-left: 25%; 
+            padding-top: 10px;
+            display: none;
+        }
+        #generate{
+            color: black;
+        }
+    </style>
+</head>
+<body>
+	{% include "tinyurl_header.html" %}
+	<div class="container-fluid" id="body">
+ 		<div class="row" id="welcome">
+	 		<h3><b>Welcome to CompressURL!™</b></h3>
+	 		<p>Make Your Big URL Short and Use Anywhere&nbsp;&nbsp;<i class='far fa-smile'></i></p>	
+ 		</div>
+ 		<div class="row" id="enterurl">
+ 			<div class="col-sm-8">
+ 				<label>Enter Url:</label>
+			    <input type="text" class="form-control" id="url" placeholder="URL" required/>
+ 			</div>
+ 		</div>
+ 		<div class="row" id="enterurl">
+ 			<div class="col-sm-8">
+ 				<label>Enter Nickname:</label>
+			    <input type="text" class="form-control" id="nickname" placeholder="Nickname">
+ 			</div>
+ 		</div>
+
+        <div class="row" id="tinyurlrow">
+            <div class="col-sm-8">
+                <label>Tiny Url Generated:</label>
+                <span>
+                    <input type="text" class="form-control" id="tinyurlgenerated" readonly/>
+                </span>
+            </div>   
+            
+        </div>
+
+ 		<div class="row" id="generatebtn">
+ 			<div class="col-sm-8">
+ 				<button type="button" class="btn btn-lg btn-info" id="generate">Generate Tiny Url</button>
+ 			</div>
+ 		</div>
+ 	</div>
+
+ 	{% include "tinyurl_table.html" %}
+</body>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#generate").click(function(){
+            var mainurl = $("#url").val();
+            var nickname = $("#nickname").val(); 
+
+            var requestdata = {}
+            requestdata['url'] =mainurl
+            requestdata['nickname'] = nickname
+
+            var jsonrequest = JSON.stringify(requestdata);
+            $.ajax({
+                    type:'POST',
+                    url:'http://127.0.0.1:8001/api/generate',
+                    data:{urldata:jsonrequest},
+                    dataType:'json',
+                    success:function(response){
+                        console.log(response)
+                        if(response.Status == 'Success'){
+                            $("#tinyurlgenerated").val(response.tinyurl)
+                            $("#tinyurlrow").show()
+                            window.location.replace('http://127.0.0.1:8001/web/generate/1')
+                        }
+                        else{
+                            alert(response.Message);
+                        }
+                    }
+                }); 
+        });
+    });
+</script>
+</html>
